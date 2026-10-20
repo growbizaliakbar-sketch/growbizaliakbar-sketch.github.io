@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Battle Zone — Ali Games</title>
+<meta name="google-adsense-account" content="ca-pub-1848078793456822">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1848078793456822" crossorigin="anonymous"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0b1220;color:#fff;font-family:Arial,Helvetica,sans-serif;display:flex;flex-direction:column;align-items:center;padding:16px;min-height:100vh}
+  a.back{color:#f5c542;text-decoration:none;font-size:14px;align-self:flex-start;max-width:380px;width:100%}
+  h1{font-size:24px;margin:8px 0 2px}
+  .sub{color:#94a3b8;font-size:13px;margin-bottom:10px;text-align:center}
+  .hud{display:flex;gap:14px;font-size:14.5px;font-weight:bold;margin-bottom:8px;flex-wrap:wrap;justify-content:center}
+  .hud span{color:#22c55e}
+  .hud .gold{color:#f5c542}
+  .wrap{position:relative}
+  canvas{border:2px solid #263859;border-radius:14px;max-width:94vw;touch-action:none;display:block;background:#20301f}
+  .overlay{position:absolute;inset:0;background:rgba(5,10,20,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;text-align:center;padding:20px}
+  .overlay h2{font-size:25px;margin-bottom:8px}
+  .overlay p{color:#cbd5e1;font-size:13.5px;margin-bottom:16px;line-height:1.55}
+  button{background:#22c55e;color:#052e12;border:none;padding:13px 34px;font-size:17px;font-weight:bold;border-radius:999px;cursor:pointer}
+  button:active{transform:scale(.97)}
+  .keys{color:#64748b;font-size:12px;margin-top:10px;text-align:center;line-height:1.6}
+  .how{max-width:380px;color:#94a3b8;font-size:13px;line-height:1.6;margin-top:14px}
+  .how b{color:#e2e8f0}
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">&larr; Saari Games</a>
+  <h1>&#128299; Battle Zone</h1>
+  <p class="sub">PUBG / Free Fire type game — 10 khiladi, zone chhota hota jayega. Aakhri bacha hua hi winner hai.</p>
+  <div class="hud">
+    <div>Zinda: <span id="alive">10</span></div>
+    <div>Kills: <span id="kills">0</span></div>
+    <div>Zone: <span class="gold" id="zoneT">--</span></div>
+    <div>Best Kills: <span id="best">0</span></div>
+  </div>
+  <div class="wrap">
+    <canvas id="game" width="360" height="540"></canvas>
+    <div class="overlay" id="overlay">
+      <h2 id="ovTitle">Battle Zone</h2>
+      <p id="ovText">9 dushman bots ke saath maidan mein utro.<br>Neela zone chhota hota jayega — zone se bahar rahe to health giregi.<br>Dawai (&#10010;) uthao, sab ko khatam karo, winner bano!</p>
+      <button id="startBtn">Maidan Mein Utro</button>
+    </div>
+  </div>
+  <p class="keys">Keyboard: WASD / Arrow keys se chalo, Mouse se nishana, Click gedabao = fire<br>Mobile: left side ungli ghumao = chalna, right side dabao = fire (nishana khud lagta hai)</p>
+  <div class="how"><b>Kaise khelein:</b> Aap hare rang ke khiladi ho. Baaki 9 bots aik doosre se bhi larhte hain. Goli lagne se health kam hoti hai; zameen par pari dawai uthane se health barhti hai. Zone ka ghaira har kuch second mein chhota hota hai — safed dairay ke andar raho warna health tezi se giregi. Sab se aakhir tak zinda rahe to jeet tumhari.</div>
+
+<script>
+const cv=document.getElementById('game'),ctx=cv.getContext('2d');
+const W=cv.width,H=cv.height;
+const aliveEl=document.getElementById('alive'),killsEl=document.getElementById('kills'),zoneEl=document.getElementById('zoneT'),bestEl=document.getElementById('best');
+const overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovText=document.getElementById('ovText'),startBtn=document.getElementById('startBtn');
+let best=+(localStorage.getItem('bz_best')||0);bestEl.textContent=best;
+const NAMES=['Bot Ali','Bot Usman','Bot Bilal','Bot Hamza','Bot Zain','Bot Fahad','Bot Omar','Bot Talha','Bot Saad'];
+const BCOLORS=['#ef4444','#f59e0b','#a855f7','#ec4899','#14b8a6','#f97316','#84cc16','#06b6d4','#eab308'];
+let running=false,lastTs=0,raf=0;
+let player,bots,bullets,packs,parts,feed,zone,zoneTimer,phase,gameTime;
+const keys={};
+let mouse={x:W/2,y:100,down:false};
+let joy={active:false,id:null,sx:0,sy:0,dx:0,dy:0};
+let firing=false;
+
+function mkFighter(x,y,name,color,isPlayer){
+  return {x:x,y:y,r:13,hp:100,maxhp:100,name:name,color:color,isPlayer:!!isPlayer,aim:0,cool:0,strafe:Math.random()*6.28,strafeT:0,dead:false,rapid:0};
+}
+function reset(){
+  player=mkFighter(W/2,H-90,'Aap','#22c55e',true);
+  bots=[];
+  for(let i=0;i<9;i++){
+    let x,y,tries=0;
+    do{x=30+Math.random()*(W-60);y=30+Math.random()*(H-160);tries++;}while(Math.hypot(x-player.x,y-player.y)<130&&tries<20);
+    bots.push(mkFighter(x,y,NAMES[i],BCOLORS[i],false));
+  }
+  bullets=[];packs=[];parts=[];feed=[];
+  zone={x:W/2,y:H/2,r:430,tx:W/2,ty:H/2,tr:430};
+  zoneTimer=7;phase=0;gameTime=0;
+  aliveEl.textContent='10';killsEl.textContent='0';zoneEl.textContent='7s';
+  player.kills=0;
+}
+function allFighters(){return [player,...bots].filter(f=>!f.dead);}
+function addFeed(txt){feed.unshift({txt:txt,t:4});if(feed.length>3)feed.pop();}
+function burst(x,y,color,n){
+  for(let i=0;i<n;i++)parts.push({x:x,y:y,vx:(Math.random()-0.5)*160,vy:(Math.random()-0.5)*160,life:0.45,color:color,r:2+Math.random()*2.5});
+}
+function shoot(f,tx,ty,dmg){
+  const a=Math.atan2(ty-f.y,tx-f.x);
+  const sp=330;
+  bullets.push({x:f.x+Math.cos(a)*(f.r+4),y:f.y+Math.sin(a)*(f.r+4),vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,owner:f,dmg:dmg,life:1.1});
+  f.aim=a;
+}
+function hurt(f,dmg,by){
+  if(f.dead)return;
+  f.hp-=dmg;
+  burst(f.x,f.y,'#fca5a5',3);
+  if(f.hp<=0){
+    f.dead=true;f.hp=0;
+    burst(f.x,f.y,f.color,22);
+    if(by&&by.isPlayer){player.kills++;killsEl.textContent=player.kills;}
+    if(f.isPlayer){addFeed('Aap khatam ho gaye!');}
+    else if(by&&by.isPlayer){addFeed('Aap ne '+f.name+' ko khatam kiya!');}
+    else if(by){addFeed(by.name+' ne '+f.name+' ko khatam kiya');}
+    if(Math.random()<0.55)packs.push({x:f.x,y:f.y,t:0});
+  }
+}
+function update(dt){
+  gameTime+=dt;
+  const fighters=allFighters();
+  // zone logic
+  zoneTimer-=dt;
+  if(zoneTimer<=0){
+    phase++;
+    if(zone.tr>46){
+      zone.tx=60+Math.random()*(W-120);zone.ty=70+Math.random()*(H-140);
+      zone.tr=Math.max(42,zone.tr*0.62);
+      zoneTimer=11;
+      addFeed('Zone chhota ho raha hai!');
+    }else zoneTimer=5;
+  }
+  const zsp=dt*0.55;
+  zone.x+=(zone.tx-zone.x)*zsp*2.2;zone.y+=(zone.ty-zone.y)*zsp*2.2;zone.r+=(zone.tr-zone.r)*zsp*1.4;
+  zoneEl.textContent=zone.tr>46?Math.max(0,Math.ceil(zoneTimer))+'s':'Aakhri';
+  // zone damage
+  for(const f of fighters){
+    if(Math.hypot(f.x-zone.x,f.y-zone.y)>zone.r){
+      f.hp-=dt*(4+phase*1.6);
+      if(f.hp<=0&&!f.dead)hurt(f,999,null);
+    }
+  }
+  // player movement
+  let mx=0,my=0;
+  if(keys.left)mx-=1;if(keys.right)mx+=1;if(keys.up)my-=1;if(keys.down)my+=1;
+  if(joy.active&&(Math.abs(joy.dx)>6||Math.abs(joy.dy)>6)){mx=joy.dx/34;my=joy.dy/34;}
+  const ml=Math.hypot(mx,my);
+  if(ml>0.1&&!player.dead){
+    const sp=142;
+    player.x+=mx/Math.max(1,ml)*sp*dt;player.y+=my/Math.max(1,ml)*sp*dt;
+    player.x=Math.max(player.r,Math.min(W-player.r,player.x));
+    player.y=Math.max(player.r,Math.min(H-player.r,player.y));
+    if(!mouse.down&&!firing)player.aim=Math.atan2(my,mx);
+  }
+  // player shooting
+  player.cool-=dt;
+  const pRate=player.rapid>0?0.11:0.19;
+  if(player.rapid>0)player.rapid-=dt;
+  if(!player.dead&&player.cool<=0){
+    if(mouse.down){shoot(player,mouse.x,mouse.y,13);player.cool=pRate;}
+    else if(firing){
+      const near=nearestEnemy(player,240);
+      if(near){shoot(player,near.x,near.y,13);player.cool=pRate;}
+    }
+  }
+  if(mouse.down)player.aim=Math.atan2(mouse.y-player.y,mouse.x-player.x);
+  // bots AI
+  for(const b of bots){
+    if(b.dead)continue;
+    b.cool-=dt;b.strafeT-=dt;
+    if(b.strafeT<=0){b.strafeT=0.9+Math.random()*1.4;b.strafe+= (Math.random()<0.5?-1.1:1.1);}
+    let tx=null,ty=null;
+    const targets=fighters.filter(f=>f!==b);
+    let near=null,nd=1e9;
+    for(const t of targets){const d=Math.hypot(t.x-b.x,t.y-b.y);if(d<nd){nd=d;near=t;}}
+    const dz=Math.hypot(b.x-zone.x,b.y-zone.y);
+    if(dz>zone.r-14){tx=zone.x;ty=zone.y;}
+    else if(near){ 
+      const want=nd>150?1:(nd<80?-0.7:0);
+      const ax=(near.x-b.x)/(nd||1),ay=(near.y-b.y)/(nd||1);
+      const sx=Math.cos(b.strafe),sy=Math.sin(b.strafe);
+      tx=b.x+ax*want*60+sx*36;ty=b.y+ay*want*60+sy*36;
+      if(nd<250&&b.cool<=0){shoot(b,near.x+(Math.random()*32-16),near.y+(Math.random()*32-16),6);b.cool=0.55+Math.random()*0.45;}
+    }
+    // heal pack seeking when hurt
+    if(b.hp<45&&packs.length){const p=packs[0];tx=p.x;ty=p.y;}
+    if(tx!==null){
+      const d=Math.hypot(tx-b.x,ty-b.y);
+      if(d>4){const sp=118;b.x+=(tx-b.x)/d*sp*dt;b.y+=(ty-b.y)/d*sp*dt;}
+    }
+    b.x=Math.max(b.r,Math.min(W-b.r,b.x));b.y=Math.max(b.r,Math.min(H-b.r,b.y));
+    if(near)b.aim=Math.atan2(near.y-b.y,near.x-b.x);
+  }
+  // bullets
+  for(const bl of bullets){
+    bl.x+=bl.vx*dt;bl.y+=bl.vy*dt;bl.life-=dt;
+    for(const f of fighters){
+      if(f===bl.owner||f.dead)continue;
+      if(Math.hypot(f.x-bl.x,f.y-bl.y)<f.r+3){hurt(f,bl.dmg,bl.owner);bl.life=0;break;}
+    }
+  }
+  bullets=bullets.filter(b=>b.life>0&&b.x>-10&&b.x<W+10&&b.y>-10&&b.y<H+10);
+  // packs
+  for(const p of packs)p.t+=dt;
+  packs=packs.filter(p=>{
+    for(const f of fighters){if(Math.hypot(f.x-p.x,f.y-p.y)<f.r+10){f.hp=Math.min(f.maxhp,f.hp+42);burst(p.x,p.y,'#4ade80',10);return false;}}
+    return p.t<25;
+  });
+  if(Math.random()<dt*0.09&&packs.length<3)packs.push({x:25+Math.random()*(W-50),y:25+Math.random()*(H-50),t:0});
+  // particles & feed timers
+  for(const pt of parts){pt.x+=pt.vx*dt;pt.y+=pt.vy*dt;pt.life-=dt;}
+  parts=parts.filter(p=>p.life>0);
+  for(const fd of feed)fd.t-=dt;
+  feed=feed.filter(f=>f.t>0);
+  // alive + end check
+  const alive=fighters.length;
+  aliveEl.textContent=alive;
+  if(player.dead){endGame(false,alive);return;}
+  if(alive===1&&!player.dead){endGame(true,1);return;}
+}
+function nearestEnemy(f,maxD){
+  let near=null,nd=maxD;
+  for(const t of allFighters()){if(t===f)continue;const d=Math.hypot(t.x-f.x,t.y-f.y);if(d<nd){nd=d;near=t;}}
+  return near;
+}
+function drawFighter(f){
+  // gun
+  ctx.strokeStyle='#111827';ctx.lineWidth=5;
+  ctx.beginPath();ctx.moveTo(f.x,f.y);ctx.lineTo(f.x+Math.cos(f.aim)*(f.r+9),f.y+Math.sin(f.aim)*(f.r+9));ctx.stroke();
+  // body
+  ctx.fillStyle=f.color;ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,6.29);ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.4)';ctx.lineWidth=2;ctx.stroke();
+  ctx.fillStyle='#fde68a';ctx.beginPath();ctx.arc(f.x,f.y,f.r*0.45,0,6.29);ctx.fill(); // helmet
+  // hp bar
+  ctx.fillStyle='rgba(0,0,0,0.55)';ctx.fillRect(f.x-14,f.y-f.r-11,28,4);
+  ctx.fillStyle=f.isPlayer?'#22c55e':'#ef4444';ctx.fillRect(f.x-14,f.y-f.r-11,28*Math.max(0,f.hp)/f.maxhp,4);
+  // name
+  ctx.fillStyle='#fff';ctx.font='8.5px Arial';ctx.textAlign='center';ctx.fillText(f.name,f.x,f.y-f.r-14);
+}
+function draw(){
+  // ground
+  ctx.fillStyle='#20301f';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#263a24';
+  for(let x=0;x<W;x+=45)for(let y=0;y<H;y+=45)if(((x+y)/45)%2===0)ctx.fillRect(x,y,45,45);
+  // rocks / bushes decor
+  ctx.fillStyle='#3b5535';
+  for(const [x,y,r] of [[40,120,15],[320,90,12],[70,420,14],[300,470,16],[180,250,11],[330,300,10]]){ctx.beginPath();ctx.arc(x,y,r,0,6.29);ctx.fill();}
+  // zone overlay (outside dark)
+  ctx.save();
+  ctx.beginPath();ctx.rect(0,0,W,H);ctx.arc(zone.x,zone.y,zone.r,0,6.29,true);ctx.clip();
+  ctx.fillStyle='rgba(30,64,175,0.42)';ctx.fillRect(0,0,W,H);
+  ctx.restore();
+  ctx.strokeStyle='#93c5fd';ctx.lineWidth=2.5;
+  ctx.beginPath();ctx.arc(zone.x,zone.y,zone.r,0,6.29);ctx.stroke();
+  // next zone hint
+  if(zone.tr<zone.r-4){ctx.strokeStyle='rgba(255,255,255,0.75)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(zone.tx,zone.ty,zone.tr,0,6.29);ctx.stroke();}
+  // packs
+  for(const p of packs){
+    ctx.fillStyle='#f8fafc';ctx.beginPath();ctx.roundRect(p.x-9,p.y-9,18,18,4);ctx.fill();
+    ctx.fillStyle='#ef4444';ctx.fillRect(p.x-2,p.y-6,4,12);ctx.fillRect(p.x-6,p.y-2,12,4);
+  }
+  // bullets
+  ctx.fillStyle='#fde68a';
+  for(const b of bullets){ctx.beginPath();ctx.arc(b.x,b.y,3,0,6.29);ctx.fill();}
+  // fighters
+  for(const f of allFighters())drawFighter(f);
+  // particles
+  for(const p of parts){ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.29);ctx.fill();}
+  // joystick
+  if(joy.active){
+    ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(joy.sx,joy.sy,34,0,6.29);ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,0.45)';ctx.beginPath();ctx.arc(joy.sx+joy.dx,joy.sy+joy.dy,14,0,6.29);ctx.fill();
+  }
+  // player HP big bar (bottom)
+  ctx.fillStyle='rgba(0,0,0,0.55)';ctx.fillRect(10,H-20,150,10);
+  ctx.fillStyle='#22c55e';ctx.fillRect(10,H-20,150*Math.max(0,player.hp)/100,10);
+  ctx.fillStyle='#fff';ctx.font='bold 9px Arial';ctx.textAlign='left';ctx.fillText('HEALTH',12,H-23);
+  // kill feed
+  ctx.font='11px Arial';ctx.textAlign='left';
+  feed.forEach((f,i)=>{ctx.fillStyle='rgba(0,0,0,0.45)';ctx.fillRect(8,8+i*20,Math.min(250,f.txt.length*6.4+14),16);ctx.fillStyle='#fde68a';ctx.fillText(f.txt,14,20+i*20);});
+}
+function loop(ts){
+  if(!running)return;
+  const dt=Math.min(0.04,(ts-lastTs)/1000||0.016);lastTs=ts;
+  update(dt);if(!running)return;
+  draw();
+  raf=requestAnimationFrame(loop);
+}
+function endGame(won,rank){
+  running=false;cancelAnimationFrame(raf);
+  const k=player.kills||0;
+  if(k>best){best=k;localStorage.setItem('bz_best',best);bestEl.textContent=best;}
+  if(won){
+    ovTitle.textContent='🏆 WINNER! Aap Jeet Gaye!';
+    ovText.innerHTML='Sab ko khatam karke aakhir tak zinda rahe!<br>Kills: <b style="color:#22c55e">'+k+'</b> &nbsp;|&nbsp; Waqt: '+Math.round(gameTime)+' second';
+  }else{
+    ovTitle.textContent='Game Khatam — Rank #'+rank;
+    ovText.innerHTML='Aap '+rank+' number par rahe (10 mein se).<br>Kills: <b style="color:#22c55e">'+k+'</b><br>Dobara koshish karo, is dafa zone ke andar rehna!';
+  }
+  startBtn.textContent='Dobara Khelo';
+  overlay.style.display='flex';
+}
+// controls
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')keys.left=true;
+  if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')keys.right=true;
+  if(e.key==='ArrowUp'||e.key==='w'||e.key==='W')keys.up=true;
+  if(e.key==='ArrowDown'||e.key==='s'||e.key==='S')keys.down=true;
+  if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key))e.preventDefault();
+});
+document.addEventListener('keyup',e=>{
+  if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')keys.left=false;
+  if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')keys.right=false;
+  if(e.key==='ArrowUp'||e.key==='w'||e.key==='W')keys.up=false;
+  if(e.key==='ArrowDown'||e.key==='s'||e.key==='S')keys.down=false;
+});
+function canvasPos(e){const r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*(W/r.width),y:(e.clientY-r.top)*(H/r.height)};}
+cv.addEventListener('mousemove',e=>{const p=canvasPos(e);mouse.x=p.x;mouse.y=p.y;});
+cv.addEventListener('mousedown',e=>{const p=canvasPos(e);mouse.x=p.x;mouse.y=p.y;mouse.down=true;});
+document.addEventListener('mouseup',()=>{mouse.down=false;});
+cv.addEventListener('touchstart',e=>{
+  e.preventDefault();
+  const r=cv.getBoundingClientRect();
+  for(const t of e.changedTouches){
+    const x=(t.clientX-r.left)*(W/r.width),y=(t.clientY-r.top)*(H/r.height);
+    if(x<W/2&&!joy.active){joy.active=true;joy.id=t.identifier;joy.sx=x;joy.sy=y;joy.dx=0;joy.dy=0;}
+    else firing=true;
+  }
+},{passive:false});
+cv.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  const r=cv.getBoundingClientRect();
+  for(const t of e.changedTouches){
+    if(joy.active&&t.identifier===joy.id){
+      const x=(t.clientX-r.left)*(W/r.width),y=(t.clientY-r.top)*(H/r.height);
+      joy.dx=Math.max(-34,Math.min(34,x-joy.sx));joy.dy=Math.max(-34,Math.min(34,y-joy.sy));
+    }
+  }
+},{passive:false});
+function touchEnd(e){
+  for(const t of e.changedTouches){
+    if(joy.active&&t.identifier===joy.id){joy.active=false;joy.dx=0;joy.dy=0;}
+  }
+  if(e.touches.length===0)firing=false;
+}
+cv.addEventListener('touchend',touchEnd);
+cv.addEventListener('touchcancel',touchEnd);
+startBtn.addEventListener('click',()=>{
+  overlay.style.display='none';
+  reset();running=true;lastTs=performance.now();raf=requestAnimationFrame(loop);draw();
+});
+reset();draw();
+</script>
+</body>
+</html>
