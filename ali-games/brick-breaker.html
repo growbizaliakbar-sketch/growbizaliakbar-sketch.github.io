@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Brick Breaker — Ali Games</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0b1220;color:#fff;font-family:Arial,Helvetica,sans-serif;display:flex;flex-direction:column;align-items:center;padding:16px;min-height:100vh}
+  a.back{color:#f5c542;text-decoration:none;font-size:14px;align-self:flex-start;max-width:380px;width:100%}
+  h1{font-size:24px;margin:8px 0 2px}
+  .sub{color:#94a3b8;font-size:13px;margin-bottom:10px;text-align:center}
+  .hud{display:flex;gap:18px;font-size:16px;font-weight:bold;margin-bottom:8px}
+  .hud span{color:#22c55e}
+  .wrap{position:relative}
+  canvas{background:#0f1d33;border:2px solid #263859;border-radius:14px;max-width:94vw;touch-action:none;display:block}
+  .overlay{position:absolute;inset:0;background:rgba(5,10,20,.78);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;text-align:center;padding:20px}
+  .overlay h2{font-size:26px;margin-bottom:8px}
+  .overlay p{color:#cbd5e1;font-size:14px;margin-bottom:16px;line-height:1.5}
+  button{background:#22c55e;color:#052e12;border:none;padding:13px 34px;font-size:17px;font-weight:bold;border-radius:999px;cursor:pointer}
+  button:active{transform:scale(.97)}
+  .keys{color:#64748b;font-size:12px;margin-top:10px;text-align:center;line-height:1.6}
+  .how{max-width:380px;color:#94a3b8;font-size:13px;line-height:1.6;margin-top:14px}
+  .how b{color:#e2e8f0}
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">&larr; Saari Games</a>
+  <h1>&#129521; Brick Breaker</h1>
+  <p class="sub">Ball ko paddle se wapas bhejo aur saari eentein toro.</p>
+  <div class="hud"><div>Score: <span id="score">0</span></div><div>Lives: <span id="lives">3</span></div><div>Best: <span id="best">0</span></div></div>
+  <div class="wrap">
+    <canvas id="game" width="360" height="540"></canvas>
+    <div class="overlay" id="overlay">
+      <h2 id="ovTitle">Brick Breaker</h2>
+      <p id="ovText">Paddle ko left-right kar ke ball roko.<br>Har eent = 10 points. 3 lives milti hain.</p>
+      <button id="startBtn">Game Start Karo</button>
+    </div>
+  </div>
+  <p class="keys">Keyboard: &#8592; &#8594; / A D &nbsp;|&nbsp; Mobile: ungli drag karo &nbsp;|&nbsp; Mouse bhi chalta hai</p>
+  <div class="how"><b>Kaise khelein:</b> Neeche wala paddle ball ko neeche girne se rokta hai. Ball eenton se takra kar unhein torti hai. Saari eentein toro to jeet, ball 3 dafa gir jaye to game khatam.</div>
+
+<script>
+const cv=document.getElementById('game'),ctx=cv.getContext('2d');
+const scoreEl=document.getElementById('score'),livesEl=document.getElementById('lives'),bestEl=document.getElementById('best');
+const overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovText=document.getElementById('ovText'),startBtn=document.getElementById('startBtn');
+let best=+(localStorage.getItem('brick_best')||0);bestEl.textContent=best;
+const COLORS=['#ef4444','#f97316','#facc15','#22c55e','#3b82f6'];
+let paddle,ball,bricks,score,lives,running,raf,keys={};
+
+function buildBricks(){
+  bricks=[];
+  for(let r=0;r<5;r++)for(let c=0;c<7;c++)
+    bricks.push({x:14+c*48,y:56+r*26,w:42,h:18,color:COLORS[r],alive:true});
+}
+function resetBall(){ball={x:paddle.x+paddle.w/2,y:492,vx:2.6,vy:-3.4,r:8};}
+function reset(){
+  paddle={x:135,y:506,w:90,h:12};
+  score=0;lives=3;running=true;
+  scoreEl.textContent='0';livesEl.textContent='3';
+  buildBricks();resetBall();
+}
+function loop(){
+  if(!running)return;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  if(keys.left)paddle.x=Math.max(0,paddle.x-5);
+  if(keys.right)paddle.x=Math.min(cv.width-paddle.w,paddle.x+5);
+  ball.x+=ball.vx;ball.y+=ball.vy;
+  if(ball.x-ball.r<0||ball.x+ball.r>cv.width)ball.vx*=-1;
+  if(ball.y-ball.r<0)ball.vy*=-1;
+  if(ball.y+ball.r>=paddle.y&&ball.y+ball.r<=paddle.y+paddle.h+4&&ball.x>paddle.x&&ball.x<paddle.x+paddle.w&&ball.vy>0){
+    const hit=(ball.x-(paddle.x+paddle.w/2))/(paddle.w/2);
+    ball.vx=hit*4.2;ball.vy=-Math.abs(ball.vy);
+    const sp=Math.max(3.6,Math.hypot(ball.vx,ball.vy));const cur=Math.hypot(ball.vx,ball.vy);
+    ball.vx*=sp/cur;ball.vy*=sp/cur;
+  }
+  if(ball.y-ball.r>cv.height){
+    lives--;livesEl.textContent=lives;
+    if(lives<=0){gameOver(false);return;}
+    resetBall();
+  }
+  for(const b of bricks){
+    if(!b.alive)continue;
+    if(ball.x+ball.r>b.x&&ball.x-ball.r<b.x+b.w&&ball.y+ball.r>b.y&&ball.y-ball.r<b.y+b.h){
+      b.alive=false;ball.vy*=-1;score+=10;scoreEl.textContent=score;break;
+    }
+  }
+  if(bricks.every(b=>!b.alive)){gameOver(true);return;}
+  for(const b of bricks){if(!b.alive)continue;ctx.fillStyle=b.color;ctx.beginPath();ctx.roundRect(b.x,b.y,b.w,b.h,4);ctx.fill();}
+  ctx.fillStyle='#e2e8f0';ctx.beginPath();ctx.roundRect(paddle.x,paddle.y,paddle.w,paddle.h,6);ctx.fill();
+  ctx.fillStyle='#f5c542';ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill();
+  raf=requestAnimationFrame(loop);
+}
+function gameOver(won){
+  running=false;cancelAnimationFrame(raf);
+  if(score>best){best=score;localStorage.setItem('brick_best',best);bestEl.textContent=best;}
+  ovTitle.textContent=won?'Mubarak! Saari Eentein Tor Deen':'Game Over!';
+  ovText.innerHTML='Aap ka score: <b style="color:#22c55e">'+score+'</b><br>Best score: '+best;
+  startBtn.textContent='Dobara Khelo';
+  overlay.style.display='flex';
+}
+startBtn.addEventListener('click',()=>{overlay.style.display='none';reset();loop();});
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')keys.left=true;
+  if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')keys.right=true;
+});
+document.addEventListener('keyup',e=>{
+  if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')keys.left=false;
+  if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')keys.right=false;
+});
+function movePaddle(clientX){
+  if(!paddle)return;
+  const r=cv.getBoundingClientRect();
+  const x=(clientX-r.left)*(cv.width/r.width);
+  paddle.x=Math.max(0,Math.min(cv.width-paddle.w,x-paddle.w/2));
+}
+cv.addEventListener('mousemove',e=>movePaddle(e.clientX));
+cv.addEventListener('touchmove',e=>{e.preventDefault();movePaddle(e.touches[0].clientX);},{passive:false});
+</script>
+</body>
+</html>

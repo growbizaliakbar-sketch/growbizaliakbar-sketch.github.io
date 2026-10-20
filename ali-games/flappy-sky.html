@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Flappy Sky — Ali Games</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0b1220;color:#fff;font-family:Arial,Helvetica,sans-serif;display:flex;flex-direction:column;align-items:center;padding:16px;min-height:100vh}
+  a.back{color:#f5c542;text-decoration:none;font-size:14px;align-self:flex-start;max-width:380px;width:100%}
+  h1{font-size:24px;margin:8px 0 2px}
+  .sub{color:#94a3b8;font-size:13px;margin-bottom:10px;text-align:center}
+  .hud{display:flex;gap:18px;font-size:16px;font-weight:bold;margin-bottom:8px}
+  .hud span{color:#22c55e}
+  .wrap{position:relative}
+  canvas{background:linear-gradient(#7dd3fc,#bae6fd);border:2px solid #263859;border-radius:14px;max-width:94vw;touch-action:none;display:block}
+  .overlay{position:absolute;inset:0;background:rgba(5,10,20,.78);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;text-align:center;padding:20px}
+  .overlay h2{font-size:26px;margin-bottom:8px}
+  .overlay p{color:#cbd5e1;font-size:14px;margin-bottom:16px;line-height:1.5}
+  button{background:#22c55e;color:#052e12;border:none;padding:13px 34px;font-size:17px;font-weight:bold;border-radius:999px;cursor:pointer}
+  button:active{transform:scale(.97)}
+  .keys{color:#64748b;font-size:12px;margin-top:10px;text-align:center;line-height:1.6}
+  .how{max-width:380px;color:#94a3b8;font-size:13px;line-height:1.6;margin-top:14px}
+  .how b{color:#e2e8f0}
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">&larr; Saari Games</a>
+  <h1>&#128038; Flappy Sky</h1>
+  <p class="sub">Tap karo, urte raho — pipes ke beech se guzarna hai.</p>
+  <div class="hud"><div>Score: <span id="score">0</span></div><div>Best: <span id="best">0</span></div></div>
+  <div class="wrap">
+    <canvas id="game" width="360" height="540"></canvas>
+    <div class="overlay" id="overlay">
+      <h2 id="ovTitle">Flappy Sky</h2>
+      <p id="ovText">Har tap par parinda upar uchalta hai.<br>Pipes se takraye baghair aage barho.</p>
+      <button id="startBtn">Game Start Karo</button>
+    </div>
+  </div>
+  <p class="keys">Keyboard: Space / &#8593; &nbsp;|&nbsp; Mobile: screen tap karo</p>
+  <div class="how"><b>Kaise khelein:</b> Tap ya Space dabane se parinda upar jata hai, chhorne se neeche girta hai. Hare pipes ke darmiyan wali khaali jagah se guzro — har pipe paar karne par 1 point. Zameen ya pipe se takraye to game khatam.</div>
+
+<script>
+const cv=document.getElementById('game'),ctx=cv.getContext('2d');
+const scoreEl=document.getElementById('score'),bestEl=document.getElementById('best');
+const overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovText=document.getElementById('ovText'),startBtn=document.getElementById('startBtn');
+let best=+(localStorage.getItem('flappy_best')||0);bestEl.textContent=best;
+let bird,pipes,score,running,raf,frame;
+
+function reset(){
+  bird={x:70,y:250,vy:0,r:15};
+  pipes=[];score=0;frame=0;running=true;
+  scoreEl.textContent='0';
+}
+function loop(){
+  if(!running)return;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  frame++;
+  if(frame%95===0){
+    const gap=132,top=40+Math.random()*(cv.height-gap-140);
+    pipes.push({x:cv.width,w:64,top:top,gap:gap,passed:false});
+  }
+  ctx.fillStyle='#16a34a';
+  for(const p of pipes){
+    p.x-=2.4;
+    ctx.fillRect(p.x,0,p.w,p.top);
+    ctx.fillRect(p.x,p.top+p.gap,p.w,cv.height-(p.top+p.gap)-26);
+    if(!p.passed&&p.x+p.w<bird.x){p.passed=true;score++;scoreEl.textContent=score;}
+    if(bird.x+bird.r>p.x&&bird.x-bird.r<p.x+p.w&&(bird.y-bird.r<p.top||bird.y+bird.r>p.top+p.gap)){gameOver();return;}
+  }
+  pipes=pipes.filter(p=>p.x>-70);
+  ctx.fillStyle='#65a30d';ctx.fillRect(0,cv.height-26,cv.width,26);
+  bird.vy+=0.42;bird.y+=bird.vy;
+  if(bird.y+bird.r>=cv.height-26||bird.y-bird.r<=0){gameOver();return;}
+  // bird
+  ctx.fillStyle='#facc15';ctx.beginPath();ctx.arc(bird.x,bird.y,bird.r,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(bird.x+6,bird.y-5,5,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#111827';ctx.beginPath();ctx.arc(bird.x+7,bird.y-5,2.4,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#f97316';ctx.beginPath();ctx.moveTo(bird.x+14,bird.y);ctx.lineTo(bird.x+24,bird.y+4);ctx.lineTo(bird.x+14,bird.y+7);ctx.fill();
+  raf=requestAnimationFrame(loop);
+}
+function flap(){if(running&&bird)bird.vy=-7.6;}
+function gameOver(){
+  running=false;cancelAnimationFrame(raf);
+  if(score>best){best=score;localStorage.setItem('flappy_best',best);bestEl.textContent=best;}
+  ovTitle.textContent='Game Over!';
+  ovText.innerHTML='Aap ka score: <b style="color:#22c55e">'+score+'</b><br>Best score: '+best;
+  startBtn.textContent='Dobara Khelo';
+  overlay.style.display='flex';
+}
+startBtn.addEventListener('click',e=>{e.stopPropagation();overlay.style.display='none';reset();loop();});
+document.addEventListener('keydown',e=>{if(e.code==='Space'||e.key==='ArrowUp'){e.preventDefault();flap();}});
+cv.addEventListener('touchstart',e=>{e.preventDefault();flap();},{passive:false});
+cv.addEventListener('mousedown',()=>flap());
+</script>
+</body>
+</html>
