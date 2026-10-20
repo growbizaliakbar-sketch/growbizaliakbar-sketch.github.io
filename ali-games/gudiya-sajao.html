@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Gudiya Sajao — Ali Games</title>
+<meta name="google-adsense-account" content="ca-pub-1848078793456822">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1848078793456822" crossorigin="anonymous"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0b1220;color:#fff;font-family:Arial,Helvetica,sans-serif;display:flex;flex-direction:column;align-items:center;padding:16px;min-height:100vh}
+  a.back{color:#f5c542;text-decoration:none;font-size:14px;align-self:flex-start;max-width:400px;width:100%}
+  h1{font-size:24px;margin:8px 0 2px}
+  .sub{color:#94a3b8;font-size:13px;margin-bottom:10px;text-align:center}
+  .hud{font-size:15px;font-weight:bold;margin-bottom:8px}
+  .hud span{color:#f5c542}
+  .stage{position:relative;width:min(94vw,360px)}
+  svg{width:100%;height:auto;display:block;border:2px solid #263859;border-radius:14px;background:#ffe4ef}
+  #doneMsg{position:absolute;left:0;right:0;top:12px;text-align:center;font-size:21px;font-weight:bold;color:#e11d63;text-shadow:0 1px 0 #fff,0 0 12px #fff;display:none}
+  .panel{width:min(94vw,400px);margin-top:12px}
+  .cat{font-size:13.5px;font-weight:bold;color:#f9a8d4;margin:12px 0 6px}
+  .row{display:flex;flex-wrap:wrap;gap:7px}
+  .opt{background:#1c2a47;color:#e2e8f0;border:2px solid #334155;border-radius:999px;padding:9px 14px;font-size:13.5px;cursor:pointer}
+  .opt.sel{border-color:#22c55e;background:#14532d;color:#fff}
+  .opt.on{border-color:#f5c542;background:#713f12;color:#fff}
+  .dot{width:30px;height:30px;border-radius:50%;border:3px solid #334155;cursor:pointer;padding:0}
+  .dot.sel{border-color:#fff;box-shadow:0 0 0 2px #22c55e}
+  .bigbtns{display:flex;gap:9px;margin-top:16px}
+  .bigbtns button{flex:1;border:none;padding:13px 8px;font-size:15px;font-weight:bold;border-radius:999px;cursor:pointer}
+  #surpriseBtn{background:#a855f7;color:#fff}
+  #readyBtn{background:#22c55e;color:#052e12}
+  .how{max-width:400px;color:#94a3b8;font-size:13px;line-height:1.6;margin-top:16px}
+  .how b{color:#e2e8f0}
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">&larr; Saari Games</a>
+  <h1>&#127872; Gudiya Sajao</h1>
+  <p class="sub">Gudiya ko apni pasand se sajao — kapray, baal, rang, jootay aur pyari pyari cheezein.</p>
+  <div class="hud">Style Points: <span id="points">0</span> <span id="badge" style="color:#4ade80"></span></div>
+
+  <div class="stage">
+    <svg id="stageSvg" viewBox="0 0 360 420" xmlns="http://www.w3.org/2000/svg">
+      <!-- SCENES -->
+      <g id="scene1">
+        <rect x="0" y="0" width="360" height="420" fill="#ffe4ef"/>
+        <rect x="0" y="330" width="360" height="90" fill="#f9c6d8"/>
+        <rect x="36" y="52" width="86" height="96" rx="8" fill="#fff" stroke="#f0a6c0" stroke-width="4"/>
+        <rect x="46" y="62" width="30" height="36" fill="#bfe8ff"/><rect x="82" y="62" width="30" height="36" fill="#bfe8ff"/>
+        <rect x="46" y="104" width="30" height="34" fill="#bfe8ff"/><rect x="82" y="104" width="30" height="34" fill="#bfe8ff"/>
+        <path d="M300 66 c-8-12-30-12-30 4 c0 12 16 18 30 28 c14-10 30-16 30-28 c0-16-22-16-30-4z" fill="#ffb3cd"/>
+        <circle cx="312" cy="330" r="17" fill="#ffd166"/><rect x="300" y="330" width="24" height="26" fill="#f4a261"/>
+      </g>
+      <g id="scene2" style="display:none">
+        <rect x="0" y="0" width="360" height="420" fill="#bfe8ff"/>
+        <circle cx="312" cy="52" r="24" fill="#ffd93b"/>
+        <rect x="0" y="300" width="360" height="120" fill="#8ede7a"/>
+        <path d="M0 300 Q90 282 180 300 T360 300 V420 H0 Z" fill="#7bd96a"/>
+        <g fill="#ff8fab"><circle cx="40" cy="352" r="6"/><circle cx="70" cy="382" r="6"/><circle cx="322" cy="360" r="6"/><circle cx="292" cy="390" r="6"/></g>
+        <g fill="#ffd166"><circle cx="100" cy="330" r="5"/><circle cx="262" cy="336" r="5"/><circle cx="180" cy="398" r="5"/></g>
+      </g>
+      <g id="scene3" style="display:none">
+        <rect x="0" y="0" width="360" height="420" fill="#aee6ff"/>
+        <circle cx="46" cy="48" r="22" fill="#ffd93b"/>
+        <rect x="0" y="228" width="360" height="74" fill="#6ec6e8"/>
+        <path d="M0 244 Q30 236 60 244 T120 244 T180 244 T240 244 T300 244 T360 244" stroke="#ffffff" stroke-width="4" fill="none" opacity="0.7"/>
+        <rect x="0" y="302" width="360" height="118" fill="#ffe6a7"/>
+        <path d="M286 318 l34-20 v44 z" fill="#ff8fab"/><rect x="316" y="298" width="5" height="52" fill="#b07d4f"/>
+      </g>
+      <g id="scene4" style="display:none">
+        <rect x="0" y="0" width="360" height="420" fill="#2b2350"/>
+        <rect x="0" y="336" width="360" height="84" fill="#3d3468"/>
+        <path d="M0 30 Q90 62 180 34 T360 30" stroke="#f5c542" stroke-width="2" fill="none"/>
+        <g><circle cx="40" cy="42" r="6" fill="#ff5d8f"/><circle cx="100" cy="52" r="6" fill="#4ade80"/><circle cx="160" cy="44" r="6" fill="#60a5fa"/><circle cx="225" cy="48" r="6" fill="#facc15"/><circle cx="285" cy="40" r="6" fill="#ff5d8f"/><circle cx="335" cy="46" r="6" fill="#4ade80"/></g>
+        <g fill="#ffffff" opacity="0.85"><circle cx="60" cy="120" r="2.4"/><circle cx="300" cy="110" r="2.4"/><circle cx="330" cy="180" r="2"/><circle cx="28" cy="190" r="2"/></g>
+      </g>
+
+      <!-- HAIR BACKS -->
+      <g id="hairG1">
+        <path id="h1a" d="M180 30 C128 30 108 66 110 108 L104 306 C104 322 118 330 134 330 L226 330 C242 330 256 322 256 306 L250 108 C252 66 232 30 180 30 Z" fill="#2b2320"/>
+      </g>
+      <g id="hairG2" style="display:none">
+        <ellipse id="h2a" cx="258" cy="150" rx="17" ry="52" fill="#2b2320" transform="rotate(14 258 150)"/>
+        <circle id="h2b" cx="238" cy="52" r="15" fill="#2b2320"/>
+      </g>
+      <g id="hairG4" style="display:none">
+        <path id="h4a" d="M180 30 C130 30 112 62 114 104 L118 176 C119 190 130 196 142 194 L218 194 C230 196 241 190 242 176 L246 104 C248 62 230 30 180 30 Z" fill="#2b2320"/>
+      </g>
+
+      <!-- LEGS -->
+      <rect x="158" y="286" width="14" height="86" rx="6" fill="#ffd9b3"/>
+      <rect x="188" y="286" width="14" height="86" rx="6" fill="#ffd9b3"/>
+
+      <!-- SHOES -->
+      <g id="shoeG1">
+        <path d="M150 372 h30 v7 a6 6 0 0 1 -6 6 h-18 a6 6 0 0 1 -6-6 z" fill="#ff8fab"/>
+        <path d="M180 372 h30 v7 a6 6 0 0 1 -6 6 h-18 a6 6 0 0 1 -6-6 z" fill="#ff8fab"/>
+        <rect x="156" y="364" width="18" height="4" fill="#e11d63"/><rect x="186" y="364" width="18" height="4" fill="#e11d63"/>
+      </g>
+      <g id="shoeG2" style="display:none">
+        <path d="M148 368 q17-10 32 0 v10 a6 6 0 0 1-6 6 h-20 a6 6 0 0 1-6-6 z" fill="#ef4444"/>
+        <path d="M180 368 q17-10 32 0 v10 a6 6 0 0 1-6 6 h-20 a6 6 0 0 1-6-6 z" fill="#ef4444"/>
+        <rect x="150" y="376" width="28" height="4" fill="#fff"/><rect x="182" y="376" width="28" height="4" fill="#fff"/>
+      </g>
+      <g id="shoeG3" style="display:none">
+        <path d="M152 336 h26 v36 h4 v10 h-34 v-10 h4 z" fill="#8a5a2b"/>
+        <path d="M182 336 h26 v36 h4 v10 h-34 v-10 h4 z" fill="#8a5a2b"/>
+      </g>
+
+      <!-- ARMS -->
+      <path d="M140 168 Q116 214 124 262" stroke="#ffd9b3" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <path d="M220 168 Q244 214 236 262" stroke="#ffd9b3" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <circle cx="125" cy="266" r="8" fill="#ffd9b3"/><circle cx="235" cy="266" r="8" fill="#ffd9b3"/>
+
+      <!-- DRESSES -->
+      <g id="dressG1">
+        <circle cx="138" cy="166" r="12" fill="#ff5d8f" class="drC"/>
+        <circle cx="222" cy="166" r="12" fill="#ff5d8f" class="drC"/>
+        <path id="dr1a" d="M146 156 h68 l8 44 h-84 z" fill="#ff5d8f"/>
+        <path id="dr1b" d="M138 198 L118 292 q62 18 124 0 L222 198 Z" fill="#ff5d8f"/>
+        <path d="M118 292 q15 8 31 0 q15 8 31 0 q15 8 31 0 q15 8 31 0 l0 8 q-62 16-124 0 z" fill="#ffffff" opacity="0.55"/>
+        <rect x="140" y="192" width="80" height="8" fill="#ffffff" opacity="0.65"/>
+      </g>
+      <g id="dressG2" style="display:none">
+        <circle cx="138" cy="166" r="12" fill="#a855f7" class="drC"/>
+        <circle cx="222" cy="166" r="12" fill="#a855f7" class="drC"/>
+        <path id="dr2a" d="M146 156 h68 l6 38 L248 344 q-68 16-136 0 L154 194 Z" fill="#a855f7"/>
+        <path d="M154 194 L112 344 q68 16 136 0 L206 194 L196 236 L180 210 L164 236 Z" fill="#ffffff" opacity="0.28"/>
+        <rect x="142" y="188" width="76" height="8" fill="#f5c542"/>
+      </g>
+      <g id="dressG3" style="display:none">
+        <circle cx="138" cy="166" r="12" fill="#3b82f6" class="drC"/>
+        <circle cx="222" cy="166" r="12" fill="#3b82f6" class="drC"/>
+        <path id="dr3a" d="M146 156 h68 l8 46 h-84 z" fill="#3b82f6"/>
+        <path d="M140 202 L126 268 q54 14 108 0 L220 202 Z" fill="#ffffff"/>
+        <path d="M140 202 h80 l3 12 h-86 z" fill="#f5c542"/>
+        <circle cx="180" cy="178" r="6" fill="#f5c542"/>
+      </g>
+      <g id="dressG4" style="display:none">
+        <circle cx="138" cy="166" r="12" fill="#ef4444" class="drC"/>
+        <circle cx="222" cy="166" r="12" fill="#ef4444" class="drC"/>
+        <path id="dr4a" d="M146 156 h68 l8 42 h-84 z" fill="#ef4444"/>
+        <path id="dr4b" d="M138 196 C110 250 102 300 104 322 q76 20 152 0 C258 300 250 250 222 196 Z" fill="#ef4444"/>
+        <path d="M126 262 q54 16 108 0 l8 26 q-62 18-124 0 z" fill="#f5c542" opacity="0.85"/>
+        <circle cx="180" cy="176" r="5.5" fill="#f5c542"/>
+      </g>
+
+      <!-- NECK + HEAD -->
+      <rect x="171" y="138" width="18" height="22" rx="6" fill="#ffd9b3"/>
+      <circle cx="180" cy="102" r="47" fill="#ffd9b3"/>
+      <circle cx="140" cy="118" r="8" fill="#ffb3b3" opacity="0.75"/>
+      <circle cx="220" cy="118" r="8" fill="#ffb3b3" opacity="0.75"/>
+      <ellipse cx="162" cy="100" rx="5.5" ry="7.5" fill="#26221f"/>
+      <ellipse cx="198" cy="100" rx="5.5" ry="7.5" fill="#26221f"/>
+      <circle cx="164" cy="97" r="2" fill="#fff"/><circle cx="200" cy="97" r="2" fill="#fff"/>
+      <path d="M154 86 q8-5 16-1" stroke="#7c4a21" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M190 85 q8-4 16 1" stroke="#7c4a21" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M168 122 q12 10 24 0" stroke="#d1607a" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+      <!-- HAIR FRONTS -->
+      <g id="hairF1">
+        <path id="h1b" d="M133 100 C130 52 156 34 180 34 C204 34 230 52 227 100 C214 74 202 68 196 84 C188 64 172 64 164 84 C158 68 146 74 133 100 Z" fill="#2b2320"/>
+      </g>
+      <g id="hairF2" style="display:none">
+        <path id="h2c" d="M133 100 C130 52 156 34 180 34 C204 34 230 52 227 100 C214 74 202 68 196 84 C188 64 172 64 164 84 C158 68 146 74 133 100 Z" fill="#2b2320"/>
+      </g>
+      <g id="hairF3" style="display:none">
+        <circle id="h3a" cx="124" cy="52" r="16" fill="#2b2320"/>
+        <circle id="h3b" cx="236" cy="52" r="16" fill="#2b2320"/>
+        <path id="h3c" d="M133 100 C130 52 156 34 180 34 C204 34 230 52 227 100 C214 74 202 68 196 84 C188 64 172 64 164 84 C158 68 146 74 133 100 Z" fill="#2b2320"/>
+      </g>
+      <g id="hairF4" style="display:none">
+        <path id="h4b" d="M133 100 C130 52 156 34 180 34 C204 34 230 52 227 100 C214 74 202 68 196 84 C188 64 172 64 164 84 C158 68 146 74 133 100 Z" fill="#2b2320"/>
+      </g>
+
+      <!-- ACCESSORIES -->
+      <g id="accBow" style="display:none">
+        <path d="M226 56 L204 44 q-4 12 0 24 z" fill="#ff5d8f"/>
+        <path d="M226 56 L248 44 q4 12 0 24 z" fill="#ff5d8f"/>
+        <circle cx="226" cy="56" r="6.5" fill="#e11d63"/>
+      </g>
+      <g id="accCrown" style="display:none">
+        <path d="M152 44 L160 22 L172 38 L180 18 L188 38 L200 22 L208 44 Z" fill="#f5c542" stroke="#d97706" stroke-width="2"/>
+        <circle cx="180" cy="34" r="3.4" fill="#ef4444"/>
+      </g>
+      <g id="accGlasses" style="display:none">
+        <rect x="146" y="90" width="30" height="22" rx="8" fill="#26221f"/>
+        <rect x="184" y="90" width="30" height="22" rx="8" fill="#26221f"/>
+        <rect x="174" y="97" width="12" height="4" fill="#26221f"/>
+      </g>
+      <g id="accNecklace" style="display:none">
+        <path d="M158 156 q22 18 44 0" stroke="#f5c542" stroke-width="3.4" fill="none"/>
+        <circle cx="180" cy="170" r="5" fill="#f5c542" stroke="#d97706" stroke-width="1.4"/>
+      </g>
+      <g id="accBag" style="display:none">
+        <path d="M238 238 q14-18 28 0" stroke="#a855f7" stroke-width="4" fill="none"/>
+        <rect x="230" y="238" width="44" height="36" rx="8" fill="#a855f7"/>
+        <rect x="230" y="250" width="44" height="6" fill="#f5c542"/>
+        <circle cx="252" cy="262" r="3.4" fill="#fff"/>
+      </g>
+
+      <!-- SPARKLES + CONFETTI -->
+      <g id="sparkles" style="display:none" fill="#f5c542">
+        <path d="M66 150 l3.4 8 8 3.4 -8 3.4 -3.4 8 -3.4-8 -8-3.4 8-3.4z"/>
+        <path d="M292 128 l3 7.4 7.4 3 -7.4 3 -3 7.4 -3-7.4 -7.4-3 7.4-3z"/>
+        <path d="M104 66 l2.6 6.4 6.4 2.6 -6.4 2.6 -2.6 6.4 -2.6-6.4 -6.4-2.6 6.4-2.6z"/>
+        <path d="M262 236 l2.6 6.4 6.4 2.6 -6.4 2.6 -2.6 6.4 -2.6-6.4 -6.4-2.6 6.4-2.6z"/>
+      </g>
+      <g id="confetti" style="display:none">
+        <rect x="52" y="40" width="9" height="14" fill="#ff5d8f" transform="rotate(20 56 47)"/>
+        <rect x="120" y="26" width="9" height="14" fill="#4ade80" transform="rotate(-16 124 33)"/>
+        <rect x="230" y="30" width="9" height="14" fill="#60a5fa" transform="rotate(24 234 37)"/>
+        <rect x="300" y="56" width="9" height="14" fill="#facc15" transform="rotate(-20 304 63)"/>
+        <rect x="86" y="90" width="9" height="14" fill="#a855f7" transform="rotate(30 90 97)"/>
+        <rect x="268" y="104" width="9" height="14" fill="#ff8fab" transform="rotate(-26 272 111)"/>
+        <circle cx="180" cy="22" r="5" fill="#ff5d8f"/><circle cx="330" cy="150" r="5" fill="#4ade80"/>
+        <circle cx="30" cy="140" r="5" fill="#60a5fa"/><circle cx="200" cy="52" r="4" fill="#facc15"/>
+      </g>
+    </svg>
+    <div id="doneMsg">Gudiya Tayyar Hai! &#127881;</div>
+  </div>
+
+  <div class="panel">
+    <div class="cat">&#128087; Kapray (Dress)</div>
+    <div class="row" id="dressRow">
+      <button class="opt sel" id="dressBtn1">Frock</button>
+      <button class="opt" id="dressBtn2">Lamba Gown</button>
+      <button class="opt" id="dressBtn3">Top + Skirt</button>
+      <button class="opt" id="dressBtn4">Shehzadi Wala</button>
+    </div>
+    <div class="cat">&#127912; Kapron Ka Rang</div>
+    <div class="row" id="dressColorRow">
+      <button class="dot sel" data-c="#ff5d8f" style="background:#ff5d8f" aria-label="Gulabi"></button>
+      <button class="dot" data-c="#ef4444" style="background:#ef4444" aria-label="Lal"></button>
+      <button class="dot" data-c="#3b82f6" style="background:#3b82f6" aria-label="Neela"></button>
+      <button class="dot" data-c="#22c55e" style="background:#22c55e" aria-label="Hara"></button>
+      <button class="dot" data-c="#a855f7" style="background:#a855f7" aria-label="Jamni"></button>
+      <button class="dot" data-c="#f59e0b" style="background:#f59e0b" aria-label="Peela"></button>
+    </div>
+    <div class="cat">&#128135; Baal (Hair Style)</div>
+    <div class="row">
+      <button class="opt sel" id="hairBtn1">Lambe Baal</button>
+      <button class="opt" id="hairBtn2">Ponytail</button>
+      <button class="opt" id="hairBtn3">Do Bun</button>
+      <button class="opt" id="hairBtn4">Chhote Baal</button>
+    </div>
+    <div class="cat">&#127912; Baalon Ka Rang</div>
+    <div class="row" id="hairColorRow">
+      <button class="dot sel" data-c="#2b2320" style="background:#2b2320" aria-label="Kala"></button>
+      <button class="dot" data-c="#7c4a21" style="background:#7c4a21" aria-label="Bhura"></button>
+      <button class="dot" data-c="#e8b04b" style="background:#e8b04b" aria-label="Sunehra"></button>
+      <button class="dot" data-c="#ff7eb6" style="background:#ff7eb6" aria-label="Gulabi"></button>
+      <button class="dot" data-c="#b3402a" style="background:#b3402a" aria-label="Lal Bhura"></button>
+    </div>
+    <div class="cat">&#128095; Jootay (Shoes)</div>
+    <div class="row">
+      <button class="opt sel" id="shoeBtn1">Sandal</button>
+      <button class="opt" id="shoeBtn2">Jootay</button>
+      <button class="opt" id="shoeBtn3">Boot</button>
+    </div>
+    <div class="cat">&#10024; Pyari Cheezein (lagao / hatao)</div>
+    <div class="row">
+      <button class="opt" id="accBtnBow">&#127872; Ribbon</button>
+      <button class="opt" id="accBtnCrown">&#128081; Taaj</button>
+      <button class="opt" id="accBtnGlasses">&#128083; Chashma</button>
+      <button class="opt" id="accBtnNecklace">&#128142; Haar</button>
+      <button class="opt" id="accBtnBag">&#128092; Bag</button>
+    </div>
+    <div class="cat">&#127968; Jagah (Background)</div>
+    <div class="row">
+      <button class="opt sel" id="sceneBtn1">Kamra</button>
+      <button class="opt" id="sceneBtn2">Bagh</button>
+      <button class="opt" id="sceneBtn3">Samandar</button>
+      <button class="opt" id="sceneBtn4">Party</button>
+    </div>
+    <div class="bigbtns">
+      <button id="surpriseBtn">&#127922; Surprise Karo!</button>
+      <button id="readyBtn">&#10003; Gudiya Tayyar!</button>
+    </div>
+  </div>
+
+  <div class="how"><b>Kaise khelein:</b> Neeche diye button dabao aur gudiya badal jayegi. Kapray chuno, un ka rang chuno, baal banao, jootay pehnao, taaj aur bag lagao, aur jagah bhi badlo. Har tabdeeli par Style Points milte hain. Jab gudiya bilkul saj jaye to "Gudiya Tayyar" wala button dabao. "Surprise" dabane se gudiya khud-ba-khud naye rang roop mein aa jayegi.</div>
+
+<script>
+let points=0;
+const pointsEl=document.getElementById('points'),badgeEl=document.getElementById('badge');
+function el(id){return document.getElementById(id);}
+function show(groupIds,idx){
+  groupIds.forEach((g,i)=>{const n=el(g);if(n)n.style.display=(i===idx)?'block':'none';});
+}
+function markSel(btns,btn){
+  btns.forEach(b=>{const n=el(b);if(n)n.classList.remove('sel');});
+  const c=el(btn);if(c)c.classList.add('sel');
+}
+function addPoints(n){
+  points+=n;pointsEl.textContent=points;
+  if(points>=100&&!badgeEl.textContent)badgeEl.textContent=' — ⭐ Super Style!';
+  const sp=el('sparkles');
+  if(sp){sp.style.display='block';setTimeout(()=>{sp.style.display='none';},480);}
+}
+const DRESS_G=['dressG1','dressG2','dressG3','dressG4'];
+const DRESS_B=['dressBtn1','dressBtn2','dressBtn3','dressBtn4'];
+const DRESS_COLOR_IDS=['dr1a','dr1b','dr2a','dr3a','dr4a','dr4b'];
+let curDress=0;
+function setDress(i){
+  curDress=i;show(DRESS_G,i);markSel(DRESS_B,DRESS_B[i]);addPoints(5);
+}
+const HAIR_BACK=['hairG1','hairG2',null,'hairG4'];
+const HAIR_FRONT=['hairF1','hairF2','hairF3','hairF4'];
+const HAIR_B=['hairBtn1','hairBtn2','hairBtn3','hairBtn4'];
+const HAIR_COLOR_IDS=['h1a','h1b','h2a','h2b','h2c','h3a','h3b','h3c','h4a','h4b'];
+function setHair(i){
+  HAIR_BACK.forEach((g,j)=>{if(g){const n=el(g);if(n)n.style.display=(j===i)?'block':'none';}});
+  show(HAIR_FRONT,i);markSel(HAIR_B,HAIR_B[i]);addPoints(5);
+}
+const SHOE_G=['shoeG1','shoeG2','shoeG3'];
+const SHOE_B=['shoeBtn1','shoeBtn2','shoeBtn3'];
+function setShoes(i){show(SHOE_G,i);markSel(SHOE_B,SHOE_B[i]);addPoints(5);}
+const SCENE_G=['scene1','scene2','scene3','scene4'];
+const SCENE_B=['sceneBtn1','sceneBtn2','sceneBtn3','sceneBtn4'];
+function setScene(i){show(SCENE_G,i);markSel(SCENE_B,SCENE_B[i]);addPoints(3);}
+function setDressColor(hex){
+  DRESS_COLOR_IDS.forEach(id=>{const n=el(id);if(n)n.setAttribute('fill',hex);});
+  document.querySelectorAll('#dressG1 .drC, #dressG2 .drC, #dressG3 .drC, #dressG4 .drC').forEach(n=>n.setAttribute('fill',hex));
+}
+function setHairColor(hex){
+  HAIR_COLOR_IDS.forEach(id=>{const n=el(id);if(n)n.setAttribute('fill',hex);});
+}
+function dotRow(rowId,fn){
+  const row=el(rowId);if(!row)return;
+  row.querySelectorAll('.dot').forEach(d=>{
+    d.addEventListener('click',()=>{
+      row.querySelectorAll('.dot').forEach(x=>x.classList.remove('sel'));
+      d.classList.add('sel');fn(d.getAttribute('data-c'));addPoints(4);
+    });
+  });
+}
+const ACC_STATE={};
+function toggleAcc(gid,btnId){
+  const g=el(gid),b=el(btnId);if(!g||!b)return;
+  const on=!ACC_STATE[gid];ACC_STATE[gid]=on;
+  g.style.display=on?'block':'none';
+  b.classList.toggle('on',on);
+  addPoints(on?6:2);
+}
+DRESS_B.forEach((b,i)=>{const n=el(b);if(n)n.addEventListener('click',()=>setDress(i));});
+HAIR_B.forEach((b,i)=>{const n=el(b);if(n)n.addEventListener('click',()=>setHair(i));});
+SHOE_B.forEach((b,i)=>{const n=el(b);if(n)n.addEventListener('click',()=>setShoes(i));});
+SCENE_B.forEach((b,i)=>{const n=el(b);if(n)n.addEventListener('click',()=>setScene(i));});
+dotRow('dressColorRow',setDressColor);
+dotRow('hairColorRow',setHairColor);
+el('accBtnBow').addEventListener('click',()=>toggleAcc('accBow','accBtnBow'));
+el('accBtnCrown').addEventListener('click',()=>toggleAcc('accCrown','accBtnCrown'));
+el('accBtnGlasses').addEventListener('click',()=>toggleAcc('accGlasses','accBtnGlasses'));
+el('accBtnNecklace').addEventListener('click',()=>toggleAcc('accNecklace','accBtnNecklace'));
+el('accBtnBag').addEventListener('click',()=>toggleAcc('accBag','accBtnBag'));
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+el('surpriseBtn').addEventListener('click',()=>{
+  setDress(Math.floor(Math.random()*4));
+  setHair(Math.floor(Math.random()*4));
+  setShoes(Math.floor(Math.random()*3));
+  setScene(Math.floor(Math.random()*4));
+  const dc=pick(['#ff5d8f','#ef4444','#3b82f6','#22c55e','#a855f7','#f59e0b']);setDressColor(dc);
+  document.querySelectorAll('#dressColorRow .dot').forEach(d=>d.classList.toggle('sel',d.getAttribute('data-c')===dc));
+  const hc=pick(['#2b2320','#7c4a21','#e8b04b','#ff7eb6','#b3402a']);setHairColor(hc);
+  document.querySelectorAll('#hairColorRow .dot').forEach(d=>d.classList.toggle('sel',d.getAttribute('data-c')===hc));
+  addPoints(6);
+});
+el('readyBtn').addEventListener('click',()=>{
+  const cf=el('confetti'),msg=el('doneMsg');
+  if(cf)cf.style.display='block';
+  if(msg)msg.style.display='block';
+  addPoints(10);
+  setTimeout(()=>{if(cf)cf.style.display='none';if(msg)msg.style.display='none';},2600);
+});
+</script>
+</body>
+</html>
