@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Cinderella Sajao — Ali Games</title>
+<meta name="google-adsense-account" content="ca-pub-1848078793456822">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1848078793456822" crossorigin="anonymous"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0b1220;color:#fff;font-family:Arial,Helvetica,sans-serif;display:flex;flex-direction:column;align-items:center;padding:16px;min-height:100vh}
+  a.back{color:#f5c542;text-decoration:none;font-size:14px;align-self:flex-start;max-width:400px;width:100%}
+  h1{font-size:24px;margin:8px 0 2px}
+  .sub{color:#94a3b8;font-size:13px;margin-bottom:10px;text-align:center}
+  .hud{font-size:15px;font-weight:bold;margin-bottom:8px}
+  .hud span{color:#f5c542}
+  .stage{position:relative;width:min(94vw,360px)}
+  svg{width:100%;height:auto;display:block;border:2px solid #263859;border-radius:14px;background:#4a3670}
+  #doneMsg{position:absolute;left:0;right:0;top:12px;text-align:center;font-size:21px;font-weight:bold;color:#1d4ed8;text-shadow:0 1px 0 #fff,0 0 12px #fff;display:none}
+  .panel{width:min(94vw,400px);margin-top:12px}
+  .cat{font-size:13.5px;font-weight:bold;color:#bfdbfe;margin:12px 0 6px}
+  .row{display:flex;flex-wrap:wrap;gap:7px}
+  .opt{background:#1c2a47;color:#e2e8f0;border:2px solid #334155;border-radius:999px;padding:9px 14px;font-size:13.5px;cursor:pointer}
+  .opt.sel{border-color:#22c55e;background:#14532d;color:#fff}
+  .opt.on{border-color:#f5c542;background:#713f12;color:#fff}
+  .dot{width:30px;height:30px;border-radius:50%;border:3px solid #334155;cursor:pointer;padding:0}
+  .dot.sel{border-color:#fff;box-shadow:0 0 0 2px #22c55e}
+  .bigbtns{display:flex;gap:9px;margin-top:16px}
+  .bigbtns button{flex:1;border:none;padding:13px 8px;font-size:15px;font-weight:bold;border-radius:999px;cursor:pointer}
+  #surpriseBtn{background:#a855f7;color:#fff}
+  #readyBtn{background:#3b82f6;color:#fff}
+  .how{max-width:400px;color:#94a3b8;font-size:13px;line-height:1.6;margin-top:16px}
+  .how b{color:#e2e8f0}
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">&larr; Saari Games</a>
+  <h1>&#128081; Cinderella Sajao</h1>
+  <p class="sub">Rubo aapi ki farmaish par — Cinderella ko neela gown, sheeshe ke jootay aur taaj pehna kar sajao.</p>
+  <div class="hud">Style Points: <span id="points">0</span> <span id="badge" style="color:#4ade80"></span></div>
+
+  <div class="stage">
+    <svg id="stageSvg" viewBox="0 0 360 420" xmlns="http://www.w3.org/2000/svg">
+      <!-- SCENES -->
+      <g id="cscene1">
+        <rect x="0" y="0" width="360" height="420" fill="#4a3670"/>
+        <rect x="0" y="336" width="360" height="84" fill="#2e2350"/>
+        <g stroke="#241b40" stroke-width="3"><line x1="0" y1="368" x2="360" y2="368"/><line x1="60" y1="336" x2="60" y2="420"/><line x1="180" y1="336" x2="180" y2="420"/><line x1="300" y1="336" x2="300" y2="420"/></g>
+        <g>
+          <rect x="30" y="80" width="70" height="120" rx="34" fill="#1c1740" stroke="#f5c542" stroke-width="4"/>
+          <rect x="145" y="60" width="70" height="140" rx="34" fill="#1c1740" stroke="#f5c542" stroke-width="4"/>
+          <rect x="260" y="80" width="70" height="120" rx="34" fill="#1c1740" stroke="#f5c542" stroke-width="4"/>
+          <circle cx="180" cy="100" r="16" fill="#f4f1de"/>
+        </g>
+        <line x1="180" y1="0" x2="180" y2="44" stroke="#f5c542" stroke-width="3"/>
+        <g fill="#f5c542"><circle cx="180" cy="56" r="7"/><circle cx="162" cy="66" r="5"/><circle cx="198" cy="66" r="5"/><circle cx="180" cy="74" r="4"/></g>
+        <rect x="0" y="200" width="26" height="136" fill="#d97706" opacity="0.55"/>
+        <rect x="334" y="200" width="26" height="136" fill="#d97706" opacity="0.55"/>
+      </g>
+      <g id="cscene2" style="display:none">
+        <rect x="0" y="0" width="360" height="420" fill="#16224d"/>
+        <circle cx="316" cy="54" r="24" fill="#f4f1de"/>
+        <circle cx="308" cy="48" r="20" fill="#16224d" opacity="0.55"/>
+        <g fill="#ffffff" opacity="0.9"><circle cx="40" cy="60" r="2.2"/><circle cx="110" cy="36" r="2.2"/><circle cx="200" cy="70" r="2.2"/><circle cx="260" cy="30" r="2.2"/><circle cx="90" cy="130" r="2"/><circle cx="230" cy="140" r="2"/><circle cx="30" cy="200" r="2"/><circle cx="330" cy="180" r="2"/></g>
+        <ellipse cx="60" cy="360" rx="70" ry="46" fill="#1f4d2e"/>
+        <ellipse cx="300" cy="368" rx="76" ry="50" fill="#1f4d2e"/>
+        <ellipse cx="180" cy="392" rx="90" ry="42" fill="#265c36"/>
+        <path d="M150 420 Q180 340 210 420 Z" fill="#c9b48a" opacity="0.8"/>
+      </g>
+      <g id="cscene3" style="display:none">
+        <rect x="0" y="0" width="360" height="420" fill="#1a1033"/>
+        <ellipse cx="180" cy="215" rx="125" ry="155" fill="#6d5bd0" opacity="0.35"/>
+        <g fill="#f5c542">
+          <path d="M60 120 l4 9.4 9.4 4 -9.4 4 -4 9.4 -4-9.4 -9.4-4 9.4-4z"/>
+          <path d="M300 100 l3.4 8 8 3.4 -8 3.4 -3.4 8 -3.4-8 -8-3.4 8-3.4z"/>
+          <path d="M310 260 l4 9.4 9.4 4 -9.4 4 -4 9.4 -4-9.4 -9.4-4 9.4-4z"/>
+          <path d="M52 280 l3.4 8 8 3.4 -8 3.4 -3.4 8 -3.4-8 -8-3.4 8-3.4z"/>
+          <path d="M180 40 l3 7.4 7.4 3 -7.4 3 -3 7.4 -3-7.4 -7.4-3 7.4-3z"/>
+        </g>
+        <g fill="#c4b5fd" opacity="0.8"><circle cx="120" cy="200" r="3"/><circle cx="250" cy="180" r="3"/><circle cx="200" cy="300" r="3"/><circle cx="90" cy="330" r="3"/><circle cx="280" cy="330" r="3"/></g>
+      </g>
+      <g id="cscene4" style="display:none">
+        <rect x="0" y="0" width="360" height="420" fill="#101a3a"/>
+        <g fill="#ffffff" opacity="0.9"><circle cx="50" cy="60" r="2.2"/><circle cx="140" cy="40" r="2.2"/><circle cx="220" cy="66" r="2"/><circle cx="120" cy="150" r="2"/><circle cx="40" cy="220" r="2"/></g>
+        <rect x="252" y="120" width="72" height="300" fill="#3a3f66"/>
+        <rect x="244" y="104" width="88" height="26" fill="#2c3152"/>
+        <circle cx="288" cy="176" r="36" fill="#f4f1de" stroke="#f5c542" stroke-width="5"/>
+        <g stroke="#26221f" stroke-width="2.6"><line x1="288" y1="176" x2="288" y2="152"/><line x1="288" y1="176" x2="288" y2="152"/></g>
+        <circle cx="288" cy="176" r="4" fill="#26221f"/>
+        <g fill="#f5c542" font-family="Arial" font-size="11" text-anchor="middle"><text x="288" y="152">12</text></g>
+        <rect x="0" y="380" width="360" height="40" fill="#1d2547"/>
+      </g>
+
+      <!-- HAIR BACKS (sunehre baal) -->
+      <g id="chairG1">
+        <path id="cu1a" d="M180 34 C140 34 124 58 126 96 L130 150 C131 162 142 166 152 164 L208 164 C218 166 229 162 230 150 L234 96 C236 58 220 34 180 34 Z" fill="#e8b04b"/>
+      </g>
+      <g id="chairG2" style="display:none">
+        <path id="cl1a" d="M180 30 C128 30 108 66 110 108 L104 306 C104 322 118 330 134 330 L226 330 C242 330 256 322 256 306 L250 108 C252 66 232 30 180 30 Z" fill="#e8b04b"/>
+      </g>
+      <g id="chairG3" style="display:none">
+        <ellipse id="cb1a" cx="180" cy="152" rx="20" ry="17" fill="#e8b04b"/>
+        <ellipse id="cb1b" cx="180" cy="184" rx="20" ry="17" fill="#e8b04b"/>
+        <ellipse id="cb1c" cx="180" cy="216" rx="20" ry="17" fill="#e8b04b"/>
+        <ellipse id="cb1d" cx="180" cy="248" rx="20" ry="17" fill="#e8b04b"/>
+        <ellipse id="cb1e" cx="180" cy="280" rx="18" ry="15" fill="#e8b04b"/>
+        <rect x="170" y="292" width="20" height="12" rx="4" fill="#ff7eb6"/>
+      </g>
+      <g id="chairG4" style="display:none">
+        <path id="co1a" d="M180 30 C128 30 108 66 110 108 L106 226 C106 240 118 246 132 246 L228 246 C242 246 254 240 254 226 L250 108 C252 66 232 30 180 30 Z" fill="#e8b04b"/>
+      </g>
+
+      <!-- LEGS -->
+      <rect x="158" y="286" width="14" height="86" rx="6" fill="#ffd9b3"/>
+      <rect x="188" y="286" width="14" height="86" rx="6" fill="#ffd9b3"/>
+
+      <!-- SHOES -->
+      <g id="cshoeG1">
+        <path d="M148 366 q16-9 32 0 l0 10 a6 6 0 0 1 -6 6 h-20 a6 6 0 0 1 -6-6 z" fill="#bfe8ff" opacity="0.85"/>
+        <path d="M180 366 q16-9 32 0 l0 10 a6 6 0 0 1 -6 6 h-20 a6 6 0 0 1 -6-6 z" fill="#bfe8ff" opacity="0.85"/>
+        <path d="M154 368 l7 9 M186 368 l7 9" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"/>
+      </g>
+      <g id="cshoeG2" style="display:none">
+        <path d="M148 366 q16-9 32 0 l0 8 h-32 z" fill="#3b82f6"/>
+        <rect x="172" y="374" width="5" height="12" fill="#1d4ed8"/>
+        <path d="M180 366 q16-9 32 0 l0 8 h-32 z" fill="#3b82f6"/>
+        <rect x="204" y="374" width="5" height="12" fill="#1d4ed8"/>
+        <rect x="150" y="362" width="28" height="4" fill="#93c5fd"/>
+        <rect x="182" y="362" width="28" height="4" fill="#93c5fd"/>
+      </g>
+      <g id="cshoeG3" style="display:none">
+        <path d="M148 368 q16-10 32 0 v8 a6 6 0 0 1 -6 6 h-20 a6 6 0 0 1 -6-6 z" fill="#ff7eb6"/>
+        <path d="M180 368 q16-10 32 0 v8 a6 6 0 0 1 -6 6 h-20 a6 6 0 0 1 -6-6 z" fill="#ff7eb6"/>
+        <circle cx="164" cy="374" r="3" fill="#fff"/><circle cx="196" cy="374" r="3" fill="#fff"/>
+      </g>
+
+      <!-- ARMS -->
+      <path d="M140 168 Q116 214 124 262" stroke="#ffd9b3" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <path d="M220 168 Q244 214 236 262" stroke="#ffd9b3" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <circle cx="125" cy="266" r="8" fill="#ffd9b3"/><circle cx="235" cy="266" r="8" fill="#ffd9b3"/>
+
+      <!-- DRESSES -->
+      <g id="cdressG1">
+        <circle id="cc1s1" cx="138" cy="166" r="13" fill="#3b82f6"/>
+        <circle id="cc1s2" cx="222" cy="166" r="13" fill="#3b82f6"/>
+        <path id="cc1a" d="M146 156 h68 l8 42 h-84 z" fill="#3b82f6"/>
+        <path id="cc1b" d="M138 196 C110 250 102 300 104 322 q76 20 152 0 C258 300 250 250 222 196 Z" fill="#3b82f6"/>
+        <path d="M138 196 C118 244 112 292 112 318 q68 18 136 0 C248 292 242 244 222 196 L210 240 L196 214 L182 240 L168 214 L154 240 Z" fill="#ffffff" opacity="0.25"/>
+        <rect x="140" y="190" width="80" height="9" fill="#f5c542"/>
+        <circle cx="180" cy="176" r="5.5" fill="#f5c542"/>
+      </g>
+      <g id="cdressG2" style="display:none">
+        <circle id="cc2s1" cx="138" cy="166" r="12" fill="#ff7eb6"/>
+        <circle id="cc2s2" cx="222" cy="166" r="12" fill="#ff7eb6"/>
+        <path id="cc2a" d="M146 156 h68 l6 38 L248 344 q-68 16-136 0 L154 194 Z" fill="#ff7eb6"/>
+        <path d="M154 194 L118 340 q62 14 124 0 L206 194 L196 238 L180 212 L164 238 Z" fill="#ffffff" opacity="0.28"/>
+        <rect x="142" y="188" width="76" height="8" fill="#f5c542"/>
+      </g>
+      <g id="cdressG3" style="display:none">
+        <circle id="cc3s1" cx="138" cy="166" r="12" fill="#eef2ff"/>
+        <circle id="cc3s2" cx="222" cy="166" r="12" fill="#eef2ff"/>
+        <path id="cc3a" d="M146 156 h68 l6 38 L248 344 q-68 16-136 0 L154 194 Z" fill="#eef2ff"/>
+        <g fill="#f5c542"><circle cx="170" cy="250" r="3"/><circle cx="196" cy="290" r="3"/><circle cx="180" cy="320" r="3"/><circle cx="158" cy="310" r="2.6"/><circle cx="206" cy="252" r="2.6"/></g>
+        <rect x="142" y="188" width="76" height="8" fill="#c7d2fe"/>
+      </g>
+      <g id="cdressG4" style="display:none">
+        <circle id="cc4s1" cx="138" cy="166" r="12" fill="#8a5a2b"/>
+        <circle id="cc4s2" cx="222" cy="166" r="12" fill="#8a5a2b"/>
+        <path id="cc4a" d="M146 156 h68 l8 46 h-84 z" fill="#8a5a2b"/>
+        <path id="cc4b" d="M140 202 L126 268 q54 14 108 0 L220 202 Z" fill="#7c8aa5"/>
+        <path d="M160 204 h40 l7 54 q-27 8-54 0 z" fill="#ffffff" opacity="0.95"/>
+        <path d="M160 204 q20 10 40 0" stroke="#d1d5db" stroke-width="2.4" fill="none"/>
+      </g>
+
+      <!-- NECK + HEAD -->
+      <rect x="171" y="138" width="18" height="22" rx="6" fill="#ffd9b3"/>
+      <circle cx="180" cy="102" r="47" fill="#ffd9b3"/>
+      <circle cx="140" cy="118" r="8" fill="#ffb3b3" opacity="0.75"/>
+      <circle cx="220" cy="118" r="8" fill="#ffb3b3" opacity="0.75"/>
+      <ellipse cx="162" cy="100" rx="5.5" ry="7.5" fill="#26221f"/>
+      <ellipse cx="198" cy="100" rx="5.5" ry="7.5" fill="#26221f"/>
+      <circle cx="164" cy="97" r="2" fill="#fff"/><circle cx="200" cy="97" r="2" fill="#fff"/>
+      <path d="M154 86 q8-5 16-1" stroke="#a06a2c" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M190 85 q8-4 16 1" stroke="#a06a2c" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M168 122 q12 10 24 0" stroke="#d1607a" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+      <!-- HAIR FRONTS -->
+      <g id="chairF1">
+        <path id="cu1c" d="M133 100 C130 52 156 34 180 34 C204 34 230 52 227 100 C214 74 202 68 196 84 C188 64 172 64 164 84 C158 68 146 74 133 100 Z" fill="#e8b04b"/>
+        <circle id="cu1b" cx="180" cy="28" r="19" fill="#e8b04b"/>
+        <circle cx="180" cy="28" r="7" fill="#ff7eb6"/>
+      </g>
+      <g id="chairF2" style="display:none">
+        <path id="cl1b" d="M133 100 C130 52 156 34 180 34 C204 34 230 52 227 100 C214 74 202 68 196 84 C188 64 172 64 164 84 C158 68 146 74 133 100 Z" fill="#e8b04b"/>
+      </g>
+      <g id="chairF3" style="display:none">
+        <path id="cb1f" d="M133 100 C130 52 156 34 180 34 C204 34 230 52 227 100 C214 74 202 68 196 84 C188 64 172 64 164 84 C158 68 146 74 133 100 Z" fill="#e8b04b"/>
+      </g>
+      <g id="chairF4" style="display:none">
+        <path id="co1b" d="M133 100 C130 52 156 34 180 34 C204 34 230 52 227 100 C214 74 202 68 196 84 C188 64 172 64 164 84 C158 68 146 74 133 100 Z" fill="#e8b04b"/>
+      </g>
+
+      <!-- ACCESSORIES -->
+      <g id="accTiara" style="display:none">
+        <path d="M148 46 Q180 16 212 46 L205 54 Q180 32 155 54 Z" fill="#f5c542" stroke="#d97706" stroke-width="2"/>
+        <circle cx="164" cy="42" r="3.6" fill="#ef4444"/>
+        <circle cx="180" cy="36" r="4.2" fill="#3b82f6"/>
+        <circle cx="196" cy="42" r="3.6" fill="#22c55e"/>
+      </g>
+      <g id="accWand" style="display:none">
+        <rect x="256" y="206" width="6" height="48" rx="3" fill="#b07d4f" transform="rotate(10 259 230)"/>
+        <path d="M259 188 l3.4 7 7.6 1.1 -5.5 5.3 1.3 7.6 -6.8-3.6 -6.8 3.6 1.3-7.6 -5.5-5.3 7.6-1.1z" fill="#f5c542" stroke="#d97706" stroke-width="1.4"/>
+      </g>
+      <g id="accPearl" style="display:none">
+        <g fill="#ffffff" stroke="#d1d5db" stroke-width="1">
+          <circle cx="160" cy="158" r="3.2"/><circle cx="167" cy="162" r="3.2"/><circle cx="174" cy="164" r="3.2"/><circle cx="180" cy="165" r="3.2"/><circle cx="186" cy="164" r="3.2"/><circle cx="193" cy="162" r="3.2"/><circle cx="200" cy="158" r="3.2"/>
+        </g>
+      </g>
+      <g id="accRibbon" style="display:none">
+        <path d="M226 56 L204 44 q-4 12 0 24 z" fill="#ff7eb6"/>
+        <path d="M226 56 L248 44 q4 12 0 24 z" fill="#ff7eb6"/>
+        <circle cx="226" cy="56" r="6.5" fill="#e11d63"/>
+      </g>
+      <g id="accFlower" style="display:none">
+        <g fill="#ff7eb6"><circle cx="128" cy="50" r="7"/><circle cx="138" cy="56" r="7"/><circle cx="134" cy="67" r="7"/><circle cx="122" cy="67" r="7"/><circle cx="118" cy="56" r="7"/></g>
+        <circle cx="128" cy="59" r="4.6" fill="#f5c542"/>
+      </g>
+
+      <!-- SPARKLES + CONFETTI -->
+      <g id="sparkles" style="display:none" fill="#f5c542">
+        <path d="M66 150 l3.4 8 8 3.4 -8 3.4 -3.4 8 -3.4-8 -8-3.4 8-3.4z"/>
+        <path d="M292 128 l3 7.4 7.4 3 -7.4 3 -3 7.4 -3-7.4 -7.4-3 7.4-3z"/>
+        <path d="M104 66 l2.6 6.4 6.4 2.6 -6.4 2.6 -2.6 6.4 -2.6-6.4 -6.4-2.6 6.4-2.6z"/>
+        <path d="M262 236 l2.6 6.4 6.4 2.6 -6.4 2.6 -2.6 6.4 -2.6-6.4 -6.4-2.6 6.4-2.6z"/>
+      </g>
+      <g id="confetti" style="display:none">
+        <rect x="52" y="40" width="9" height="14" fill="#ff7eb6" transform="rotate(20 56 47)"/>
+        <rect x="120" y="26" width="9" height="14" fill="#4ade80" transform="rotate(-16 124 33)"/>
+        <rect x="230" y="30" width="9" height="14" fill="#60a5fa" transform="rotate(24 234 37)"/>
+        <rect x="300" y="56" width="9" height="14" fill="#facc15" transform="rotate(-20 304 63)"/>
+        <rect x="86" y="90" width="9" height="14" fill="#a855f7" transform="rotate(30 90 97)"/>
+        <rect x="268" y="104" width="9" height="14" fill="#ff8fab" transform="rotate(-26 272 111)"/>
+        <circle cx="180" cy="22" r="5" fill="#ff7eb6"/><circle cx="330" cy="150" r="5" fill="#4ade80"/>
+        <circle cx="30" cy="140" r="5" fill="#60a5fa"/><circle cx="200" cy="52" r="4" fill="#facc15"/>
+      </g>
+    </svg>
+    <div id="doneMsg">Cinderella Tayyar Hai! &#128081;</div>
+  </div>
+
+  <div class="panel">
+    <div class="cat">&#128087; Kapray (Dress)</div>
+    <div class="row">
+      <button class="opt sel" id="cdressBtn1">Neela Ball Gown</button>
+      <button class="opt" id="cdressBtn2">Gulabi Gown</button>
+      <button class="opt" id="cdressBtn3">Safed Shehzadi</button>
+      <button class="opt" id="cdressBtn4">Naukarani Wala</button>
+    </div>
+    <div class="cat">&#127912; Kapron Ka Rang</div>
+    <div class="row" id="cdressColorRow">
+      <button class="dot sel" data-c="#3b82f6" style="background:#3b82f6" aria-label="Neela"></button>
+      <button class="dot" data-c="#ff7eb6" style="background:#ff7eb6" aria-label="Gulabi"></button>
+      <button class="dot" data-c="#eef2ff" style="background:#eef2ff" aria-label="Sufaid"></button>
+      <button class="dot" data-c="#a855f7" style="background:#a855f7" aria-label="Jamni"></button>
+      <button class="dot" data-c="#22c55e" style="background:#22c55e" aria-label="Sabz"></button>
+      <button class="dot" data-c="#f5c542" style="background:#f5c542" aria-label="Sunheri"></button>
+    </div>
+    <div class="cat">&#128135; Baal (Hair Style)</div>
+    <div class="row">
+      <button class="opt sel" id="chairBtn1">Jura (Updo)</button>
+      <button class="opt" id="chairBtn2">Lambe Sunehre</button>
+      <button class="opt" id="chairBtn3">Choti</button>
+      <button class="opt" id="chairBtn4">Khule Baal</button>
+    </div>
+    <div class="cat">&#127912; Baalon Ka Rang</div>
+    <div class="row" id="chairColorRow">
+      <button class="dot sel" data-c="#e8b04b" style="background:#e8b04b" aria-label="Sunehra"></button>
+      <button class="dot" data-c="#b07d4f" style="background:#b07d4f" aria-label="Halka Bhura"></button>
+      <button class="dot" data-c="#c98a1f" style="background:#c98a1f" aria-label="Gehra Sunehra"></button>
+      <button class="dot" data-c="#d9734f" style="background:#d9734f" aria-label="Surkh Sunehra"></button>
+    </div>
+    <div class="cat">&#128095; Jootay (Shoes)</div>
+    <div class="row">
+      <button class="opt sel" id="cshoeBtn1">Sheeshe ke Jootay</button>
+      <button class="opt" id="cshoeBtn2">Neeli Heel</button>
+      <button class="opt" id="cshoeBtn3">Gulabi Jootay</button>
+    </div>
+    <div class="cat">&#10024; Pyari Cheezein (lagao / hatao)</div>
+    <div class="row">
+      <button class="opt" id="accBtnTiara">&#128081; Tiara</button>
+      <button class="opt" id="accBtnWand">&#129668; Jadu ki Chhadi</button>
+      <button class="opt" id="accBtnPearl">&#128142; Moti Haar</button>
+      <button class="opt" id="accBtnRibbon">&#127872; Ribbon</button>
+      <button class="opt" id="accBtnFlower">&#127800; Phool</button>
+    </div>
+    <div class="cat">&#127968; Jagah (Background)</div>
+    <div class="row">
+      <button class="opt sel" id="csceneBtn1">Mahal</button>
+      <button class="opt" id="csceneBtn2">Raat ka Bagh</button>
+      <button class="opt" id="csceneBtn3">Jadu ki Raat</button>
+      <button class="opt" id="csceneBtn4">12 Baje</button>
+    </div>
+    <div class="bigbtns">
+      <button id="surpriseBtn">&#127922; Surprise Karo!</button>
+      <button id="readyBtn">&#10003; Cinderella Tayyar!</button>
+    </div>
+  </div>
+
+  <div class="how"><b>Kaise khelein:</b> Neeche diye button dabao aur Cinderella badal jayegi. Neela ball gown pehnao, sheeshe ke jootay lagao, tiara aur jadu ki chhadi chuno, aur jagah bhi badlo — mahal, raat ka bagh ya 12 bajne wali ghari. Har tabdeeli par Style Points milte hain. Jab Cinderella bilkul saj jaye to "Cinderella Tayyar" wala button dabao.</div>
+
+<script>
+let points=0;
+const pointsEl=document.getElementById('points'),badgeEl=document.getElementById('badge');
+function el(id){return document.getElementById(id);}
+function show(groupIds,idx){
+  groupIds.forEach((g,i)=>{const n=el(g);if(n)n.style.display=(i===idx)?'block':'none';});
+}
+function markSel(btns,btn){
+  btns.forEach(b=>{const n=el(b);if(n)n.classList.remove('sel');});
+  const c=el(btn);if(c)c.classList.add('sel');
+}
+function addPoints(n){
+  points+=n;pointsEl.textContent=points;
+  if(points>=100&&!badgeEl.textContent)badgeEl.textContent=' — ⭐ Super Style!';
+  const sp=el('sparkles');
+  if(sp){sp.style.display='block';setTimeout(()=>{sp.style.display='none';},480);}
+}
+const DRESS_G=['cdressG1','cdressG2','cdressG3','cdressG4'];
+const DRESS_B=['cdressBtn1','cdressBtn2','cdressBtn3','cdressBtn4'];
+const DRESS_COLOR_IDS=['cc1a','cc1b','cc1s1','cc1s2','cc2a','cc2s1','cc2s2','cc3a','cc3s1','cc3s2','cc4a','cc4b','cc4s1','cc4s2'];
+function setDress(i){show(DRESS_G,i);markSel(DRESS_B,DRESS_B[i]);addPoints(5);}
+const HAIR_BACK=['chairG1','chairG2','chairG3','chairG4'];
+const HAIR_FRONT=['chairF1','chairF2','chairF3','chairF4'];
+const HAIR_B=['chairBtn1','chairBtn2','chairBtn3','chairBtn4'];
+const HAIR_COLOR_IDS=['cu1a','cu1b','cu1c','cl1a','cl1b','cb1a','cb1b','cb1c','cb1d','cb1e','cb1f','co1a','co1b'];
+function setHair(i){show(HAIR_BACK,i);show(HAIR_FRONT,i);markSel(HAIR_B,HAIR_B[i]);addPoints(5);}
+const SHOE_G=['cshoeG1','cshoeG2','cshoeG3'];
+const SHOE_B=['cshoeBtn1','cshoeBtn2','cshoeBtn3'];
+function setShoes(i){show(SHOE_G,i);markSel(SHOE_B,SHOE_B[i]);addPoints(5);}
+const SCENE_G=['cscene1','cscene2','cscene3','cscene4'];
+const SCENE_B=['csceneBtn1','csceneBtn2','csceneBtn3','csceneBtn4'];
+function setScene(i){show(SCENE_G,i);markSel(SCENE_B,SCENE_B[i]);addPoints(3);}
+function setDressColor(hex){
+  DRESS_COLOR_IDS.forEach(id=>{const n=el(id);if(n)n.setAttribute('fill',hex);});
+}
+function setHairColor(hex){
+  HAIR_COLOR_IDS.forEach(id=>{const n=el(id);if(n)n.setAttribute('fill',hex);});
+}
+function dotRow(rowId,fn){
+  const row=el(rowId);if(!row)return;
+  row.querySelectorAll('.dot').forEach(d=>{
+    d.addEventListener('click',()=>{
+      row.querySelectorAll('.dot').forEach(x=>x.classList.remove('sel'));
+      d.classList.add('sel');fn(d.getAttribute('data-c'));addPoints(4);
+    });
+  });
+}
+const ACC_STATE={};
+function toggleAcc(gid,btnId){
+  const g=el(gid),b=el(btnId);if(!g||!b)return;
+  const on=!ACC_STATE[gid];ACC_STATE[gid]=on;
+  g.style.display=on?'block':'none';
+  b.classList.toggle('on',on);
+  addPoints(on?6:2);
+}
+DRESS_B.forEach((b,i)=>{const n=el(b);if(n)n.addEventListener('click',()=>setDress(i));});
+HAIR_B.forEach((b,i)=>{const n=el(b);if(n)n.addEventListener('click',()=>setHair(i));});
+SHOE_B.forEach((b,i)=>{const n=el(b);if(n)n.addEventListener('click',()=>setShoes(i));});
+SCENE_B.forEach((b,i)=>{const n=el(b);if(n)n.addEventListener('click',()=>setScene(i));});
+dotRow('cdressColorRow',setDressColor);
+dotRow('chairColorRow',setHairColor);
+el('accBtnTiara').addEventListener('click',()=>toggleAcc('accTiara','accBtnTiara'));
+el('accBtnWand').addEventListener('click',()=>toggleAcc('accWand','accBtnWand'));
+el('accBtnPearl').addEventListener('click',()=>toggleAcc('accPearl','accBtnPearl'));
+el('accBtnRibbon').addEventListener('click',()=>toggleAcc('accRibbon','accBtnRibbon'));
+el('accBtnFlower').addEventListener('click',()=>toggleAcc('accFlower','accBtnFlower'));
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+el('surpriseBtn').addEventListener('click',()=>{
+  setDress(Math.floor(Math.random()*4));
+  setHair(Math.floor(Math.random()*4));
+  setShoes(Math.floor(Math.random()*3));
+  setScene(Math.floor(Math.random()*4));
+  const dc=pick(['#3b82f6','#ff7eb6','#eef2ff','#a855f7','#22c55e','#f5c542']);setDressColor(dc);
+  document.querySelectorAll('#cdressColorRow .dot').forEach(d=>d.classList.toggle('sel',d.getAttribute('data-c')===dc));
+  const hc=pick(['#e8b04b','#b07d4f','#c98a1f','#d9734f']);setHairColor(hc);
+  document.querySelectorAll('#chairColorRow .dot').forEach(d=>d.classList.toggle('sel',d.getAttribute('data-c')===hc));
+  addPoints(6);
+});
+el('readyBtn').addEventListener('click',()=>{
+  const cf=el('confetti'),msg=el('doneMsg');
+  if(cf)cf.style.display='block';
+  if(msg)msg.style.display='block';
+  addPoints(10);
+  setTimeout(()=>{if(cf)cf.style.display='none';if(msg)msg.style.display='none';},2600);
+});
+</script>
+</body>
+</html>
