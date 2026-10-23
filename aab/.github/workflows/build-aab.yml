@@ -1,0 +1,95 @@
+name: build-aab
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.7'
+          channel: stable
+
+      - name: Fetch binary assets from live web preview
+        run: |
+          BASE="https://growbizaliakbar-sketch.github.io/sabzi-app/assets/assets"
+          mkdir -p assets/images assets/fonts
+          curl -sfL "$BASE/images/item-aloo.jpg" -o "assets/images/item-aloo.jpg"
+          curl -sfL "$BASE/images/item-bandgobhi.jpg" -o "assets/images/item-bandgobhi.jpg"
+          curl -sfL "$BASE/images/item-bhindi.jpg" -o "assets/images/item-bhindi.jpg"
+          curl -sfL "$BASE/images/item-dhaniya.jpg" -o "assets/images/item-dhaniya.jpg"
+          curl -sfL "$BASE/images/item-gajar.jpg" -o "assets/images/item-gajar.jpg"
+          curl -sfL "$BASE/images/item-harimirch.jpg" -o "assets/images/item-harimirch.jpg"
+          curl -sfL "$BASE/images/item-karelay.jpg" -o "assets/images/item-karelay.jpg"
+          curl -sfL "$BASE/images/item-kheera.jpg" -o "assets/images/item-kheera.jpg"
+          curl -sfL "$BASE/images/item-loki.jpg" -o "assets/images/item-loki.jpg"
+          curl -sfL "$BASE/images/item-mooli.jpg" -o "assets/images/item-mooli.jpg"
+          curl -sfL "$BASE/images/item-palak.jpg" -o "assets/images/item-palak.jpg"
+          curl -sfL "$BASE/images/item-pyaaz.jpg" -o "assets/images/item-pyaaz.jpg"
+          curl -sfL "$BASE/images/item-semphali.jpg" -o "assets/images/item-semphali.jpg"
+          curl -sfL "$BASE/images/item-shimla.jpg" -o "assets/images/item-shimla.jpg"
+          curl -sfL "$BASE/images/item-tamatar.jpg" -o "assets/images/item-tamatar.jpg"
+          curl -sfL "$BASE/images/item-tori.jpg" -o "assets/images/item-tori.jpg"
+          curl -sfL "$BASE/images/item-matar.jpg" -o "assets/images/item-matar.jpg"
+          curl -sfL "$BASE/images/shop-1.jpg" -o "assets/images/shop-1.jpg"
+          curl -sfL "$BASE/images/shop-2.jpg" -o "assets/images/shop-2.jpg"
+          curl -sfL "$BASE/images/shop-3.jpg" -o "assets/images/shop-3.jpg"
+          curl -sfL "$BASE/images/shop-4.jpg" -o "assets/images/shop-4.jpg"
+          curl -sfL "$BASE/images/logo.webp" -o "assets/images/logo.webp"
+          curl -sfL "$BASE/fonts/Sora-Regular.ttf" -o "assets/fonts/Sora-Regular.ttf"
+          curl -sfL "$BASE/fonts/Sora-SemiBold.ttf" -o "assets/fonts/Sora-SemiBold.ttf"
+          curl -sfL "$BASE/fonts/Sora-Bold.ttf" -o "assets/fonts/Sora-Bold.ttf"
+          echo "assets fetched:" && ls assets/images | wc -l && ls assets/fonts | wc -l
+
+      - name: Restore Android launcher icons
+        run: |
+          python3 - << 'PYEOF2'
+          import json, base64, os
+          icons = json.load(open('.github/android-icons.b64.json'))
+          for name, b64 in icons.items():
+              d = "android/app/src/main/res/" + name
+              os.makedirs(d, exist_ok=True)
+              open(os.path.join(d, "ic_launcher.png"), "wb").write(base64.b64decode(b64))
+              print("wrote", d)
+          PYEOF2
+
+      - name: Write android/local.properties
+        run: |
+          FLUTTER_SDK="$(dirname "$(dirname "$(readlink -f "$(which flutter)")")")"
+          echo "flutter.sdk=$FLUTTER_SDK" > android/local.properties
+          echo "sdk.dir=$ANDROID_SDK_ROOT" >> android/local.properties
+          cat android/local.properties
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Build release AAB
+        run: flutter build appbundle --release
+
+      - name: Verify AAB
+        run: ls -la build/app/outputs/bundle/release/app-release.aab && file build/app/outputs/bundle/release/app-release.aab
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+
+      - name: Create GitHub Release with AAB
+        run: |
+          TAG="aab-v2-run-${{ github.run_number }}"
+          gh release create "$TAG" --title "Sabzi Fresh AAB v2 (run ${{ github.run_number }})" --notes "Release AAB built by GitHub Actions from main." build/app/outputs/bundle/release/app-release.aab
